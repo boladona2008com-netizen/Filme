@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionFlix | Streaming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #141414; color: white; font-family: 'Inter', sans-serif; }
+        .netflix-card:hover { transform: scale(1.1); z-index: 10; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #E50914; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="module">
+        import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
+        import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
+
+        const VisionFlix = () => {
+            const [view, setView] = useState('home'); // home, watch, login
+            const [selectedMovie, setSelectedMovie] = useState(null);
+
+            const movies = [
+                { id: 1, title: "Stranger Things", img: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=500", category: "Terror", video: "https://vjs.zencdn.net/v/oceans.mp4" },
+                { id: 2, title: "The Witcher", img: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500", category: "Ação", video: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
+                { id: 3, title: "La Casa de Papel", img: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=500", category: "Drama", video: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
+                { id: 4, title: "O Poço", img: "https://images.unsplash.com/photo-1594908900066-3f47337549d8?auto=format&fit=crop&w=500", category: "Suspense", video: "https://vjs.zencdn.net/v/oceans.mp4" }
+            ];
+
+            const Navbar = () => (
+                <nav className="fixed top-0 w-full p-4 flex justify-between items-center bg-gradient-to-b from-black to-transparent z-50">
+                    <h1 className="text-red-600 font-bold text-3xl tracking-tighter">VISIONFLIX</h1>
+                    <div className="flex gap-4 text-sm font-medium">
+                        <span>Início</span>
+                        <span>Séries</span>
+                        <span>Filmes</span>
+                        <i data-lucide="search"></i>
+                    </div>
+                </nav>
+            );
+
+            const Home = () => (
+                <div>
+                    <Navbar />
+                    {/* Hero Section */}
+                    <div className="h-[80vh] w-full bg-cover bg-center flex items-end p-10" style={{backgroundImage: `url('${movies[0].img}')`}}>
+                        <div className="bg-black/40 p-6 rounded-lg max-w-xl">
+                            <h2 className="text-5xl font-bold mb-4">{movies[0].title}</h2>
+                            <p className="mb-4">Assista agora a nova temporada de uma das séries mais aclamadas do mundo.</p>
+                            <button onClick={() => {setSelectedMovie(movies[0]); setView('watch')}} className="bg-white text-black px-8 py-2 rounded font-bold mr-4 hover:bg-gray-200">▶ Assistir</button>
+                            <button className="bg-gray-500/50 text-white px-8 py-2 rounded font-bold">ℹ Mais Info</button>
+                        </div>
+                    </div>
+
+                    {/* Carrossel */}
+                    <div className="p-10">
+                        <h3 className="text-xl mb-4 font-semibold">Bombando no VisionFlix</h3>
+                        <div className="flex gap-4 overflow-x-auto pb-8">
+                            {movies.map(movie => (
+                                <div key={movie.id} onClick={() => {setSelectedMovie(movie); setView('watch')}} className="netflix-card flex-shrink-0 w-64 h-36 bg-gray-800 rounded cursor-pointer transition-transform">
+                                    <img src={movie.img} className="w-full h-full object-cover rounded" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const Player = () => (
+                <div className="w-screen h-screen bg-black relative">
+                    <button onClick={() => setView('home')} className="absolute top-10 left-10 z-50 text-white flex items-center gap-2">
+                        <i data-lucide="arrow-left"></i> Voltar
+                    </button>
+                    <video src={selectedMovie.video} className="w-full h-full" controls autoPlay />
+                </div>
+            );
+
+            useEffect(() => { lucide.createIcons(); }, [view]);
+
+            return (
+                <div>
+                    {view === 'home' && <Home />}
+                    {view === 'watch' && <Player />}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<VisionFlix />);
+    </script>
+</body>
+</html>
